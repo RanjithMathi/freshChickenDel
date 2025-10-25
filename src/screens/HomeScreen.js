@@ -9,15 +9,17 @@ import {
   Animated,
   TextInput,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CircleMenu from '../components/CircleMenu';
 import ProductCard from '../components/ProductCard';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Local images
-import product1 from '../assets/images/careo-1.jpg';
-import product2 from '../assets/images/careo-2.jpg';
-import product3 from '../assets/images/careo-3.jpg';
+import product1 from '../assets/images/careo-5.jpg';
+import product2 from '../assets/images/careo-3.jpg';
+import product3 from '../assets/images/careo-1.jpg';
 
 const products = [
   { id: '1', title: 'Fresh Chicken Breast- 500g', price: '₹199', image: product1 },
@@ -25,12 +27,24 @@ const products = [
   { id: '3', title: 'Chicken Wings-500g', price: '₹179', image: product3 },
 ];
 
+// Create larger product array with duplicates for section pages
+const createLargerProductArray = () => {
+  const largerArray = [];
+  for (let i = 0; i < 4; i++) {
+    products.forEach((product, index) => {
+      largerArray.push({
+        ...product,
+        id: `${product.id}-${i}-${index}`,
+      });
+    });
+  }
+  return largerArray;
+};
+
 const bannerImages = [
   require('../assets/images/careo-1.jpg'),
-  require('../assets/images/careo-2.jpg'),
-  require('../assets/images/careo-3.jpg'),
-  require('../assets/images/careo-4.jpg'),
   require('../assets/images/careo-5.jpg'),
+  require('../assets/images/careo-3.jpg'),
 ];
 
 const { width } = Dimensions.get('window');
@@ -38,7 +52,7 @@ const { width } = Dimensions.get('window');
 const HEADER_TOP_HEIGHT = 60;
 const SEARCH_BAR_HEIGHT = 50;
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchText, setSearchText] = useState('');
@@ -57,6 +71,13 @@ const HomeScreen = () => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / (width * 0.8 + 16));
     setCurrentIndex(index);
+  };
+
+  const handleViewAll = (sectionName) => {
+    navigation.navigate('SectionProducts', {
+      sectionName,
+      products: createLargerProductArray(),
+    });
   };
 
   // Animate header up & search bar sliding to top
@@ -96,8 +117,18 @@ const HomeScreen = () => {
           },
         ]}
       >
-        <Image source={require('../assets/icons/tendercut.png')} style={styles.profileImage} />
-        <Text style={styles.companyName}>Fresh Chicken</Text>
+        {/* Location Section - Left Side */}
+        <TouchableOpacity style={styles.locationContainer}>
+          <Icon name="location-on" size={20} color="#fff" />
+          <View style={styles.locationTextContainer}>
+            <Text style={styles.pincodeText}>637001</Text>
+            <Text style={styles.addressText} numberOfLines={1}>
+              Namakkal, Tamil Nadu
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Logo - Right Side */}
         <Image source={require('../assets/images/logo.png')} style={styles.logoImage} />
       </Animated.View>
 
@@ -161,14 +192,28 @@ const HomeScreen = () => {
         {/* Product Sections */}
         {['Flash Sale', 'Festival Sale', 'Diwali Sale'].map((section) => (
           <View key={section} style={styles.productSection}>
-            <Text style={styles.sectionTitle}>{section}</Text>
+            {/* Section header with title + View All */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{section}</Text>
+
+              <TouchableOpacity
+                style={styles.viewAllButton}
+                onPress={() => handleViewAll(section)}
+              >
+                <Text style={styles.viewAllText}>View All</Text>
+                <Icon name="arrow-forward" size={16} color="#dd7805" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Product grid */}
             <View style={styles.productGrid}>
-              {products.map(product => (
+              {products.map((product) => (
                 <ProductCard
                   key={`${section}-${product.id}`}
                   image={product.image}
                   title={product.title}
                   price={product.price}
+                  product={product}
                   onAdd={() => console.log(`Added ${product.title}`)}
                 />
               ))}
@@ -186,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   statusBarBackground: {
-    backgroundColor: '#0b8a0b', // Green background behind the notch/status bar
+    backgroundColor: '#0b8a0b',
   },
   headerTopRow: {
     position: 'absolute',
@@ -202,11 +247,29 @@ const styles = StyleSheet.create({
     zIndex: 10,
     elevation: 5,
   },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white',
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    maxWidth: '70%',
+  },
+  locationTextContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1,
+    marginLeft: 6,
+  },
+  pincodeText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  addressText: {
+    color: 'white',
+    fontSize: 11,
+    opacity: 0.9,
+    lineHeight: 14,
   },
   logoImage: {
     width: 40,
@@ -215,11 +278,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 2,
     borderColor: '#dd7805ff',
-  },
-  companyName: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
   },
   searchBarContainer: {
     position: 'absolute',
@@ -265,18 +323,33 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginTop: 16,
+    marginTop: 8,
   },
   productSection: {
     marginTop: 8,
     marginBottom: 24,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 4,
-    marginHorizontal: 16,
-    color: '#222',
+    color: '#333',
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  viewAllText: {
+    fontSize: 14,
+    color: '#dd7805',
+    fontWeight: '600',
   },
 });
 
