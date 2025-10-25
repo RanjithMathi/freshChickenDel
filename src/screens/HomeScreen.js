@@ -20,9 +20,9 @@ import product2 from '../assets/images/careo-2.jpg';
 import product3 from '../assets/images/careo-3.jpg';
 
 const products = [
-  { id: '1', title: 'Fresh Chicken Breast', price: '₹199 / 500g', image: product1 },
-  { id: '2', title: 'Tender Chicken Legs', price: '₹249 / 1kg', image: product2 },
-  { id: '3', title: 'Chicken Wings', price: '₹179 / 500g', image: product3 },
+  { id: '1', title: 'Fresh Chicken Breast- 500g', price: '₹199', image: product1 },
+  { id: '2', title: 'Tender Chicken Legs- 1kg', price: '₹249', image: product2 },
+  { id: '3', title: 'Chicken Wings-500g', price: '₹179', image: product3 },
 ];
 
 const bannerImages = [
@@ -98,7 +98,7 @@ const HomeScreen = () => {
       >
         <Image source={require('../assets/icons/tendercut.png')} style={styles.profileImage} />
         <Text style={styles.companyName}>Fresh Chicken</Text>
-        <Image source={require('../assets/icons/chicken.png')} style={styles.logoImage} />
+        <Image source={require('../assets/images/logo.png')} style={styles.logoImage} />
       </Animated.View>
 
       {/* Search bar that moves up on scroll */}
@@ -213,6 +213,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#dd7805ff',
   },
   companyName: {
     color: 'white',

@@ -11,10 +11,10 @@ const Header = () => {
           source={{ uri: 'https://via.placeholder.com/40' }}
           style={styles.avatar}
         />
-        <Image
-          source={{ uri: 'https://via.placeholder.com/40x40.png?text=🐔' }}
-          style={styles.logo}
-        />
+       <Image
+  source={require('../assets/images/logo/logo.png')}
+  style={styles.logo}
+/>
       </View>
 
       {/* Bottom row: Search bar */}
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logo: {
-    width: 40,
+    width: 50,
     height: 40,
     borderRadius: 20,
     backgroundColor: 'white',
