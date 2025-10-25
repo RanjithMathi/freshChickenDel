@@ -8,8 +8,6 @@ import {
   Dimensions,
   Animated,
   TextInput,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -41,7 +39,7 @@ const HEADER_TOP_HEIGHT = 60;
 const SEARCH_BAR_HEIGHT = 50;
 
 const HomeScreen = () => {
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchText, setSearchText] = useState('');
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -55,7 +53,7 @@ const HomeScreen = () => {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleScroll = (event) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / (width * 0.8 + 16));
     setCurrentIndex(index);
@@ -281,5 +279,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-
