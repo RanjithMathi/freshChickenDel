@@ -80,6 +80,13 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  const handleCategoryPress = (categoryName) => {
+    // Navigate to CategoryProducts screen with selected category
+    navigation.navigate('CategoryProducts', {
+      category: categoryName,
+    });
+  };
+
   // Animate header up & search bar sliding to top
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_TOP_HEIGHT],
@@ -184,9 +191,21 @@ const HomeScreen = ({ navigation }) => {
 
         {/* Circle Menu */}
         <View style={styles.menuRow}>
-          <CircleMenu title="Chicken" iconUri={require('../assets/icons/chicken.png')} />
-          <CircleMenu title="Tender Cut" iconUri={require('../assets/icons/tendercut.png')} />
-          <CircleMenu title="Chicken Fry" iconUri={require('../assets/icons/chickenfry.png')} />
+          <CircleMenu 
+            title="Chicken" 
+            iconUri={require('../assets/categories/chicken.jpg')}
+            onPress={() => handleCategoryPress('Chicken')}
+          />
+          <CircleMenu 
+            title="Tender Cut" 
+            iconUri={require('../assets/categories/readytocook.jpg')}
+            onPress={() => handleCategoryPress('Ready to Cook')}
+          />
+          <CircleMenu 
+            title="Egg" 
+            iconUri={require('../assets/categories/eggs.jpg')}
+            onPress={() => handleCategoryPress('Eggs')}
+          />
         </View>
 
         {/* Product Sections */}
@@ -326,8 +345,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   productSection: {
-    marginTop: 8,
-    marginBottom: 24,
+    marginTop: 34,
+    marginBottom: 20,
   },
   sectionHeader: {
     flexDirection: 'row',

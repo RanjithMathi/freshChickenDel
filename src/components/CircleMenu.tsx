@@ -11,7 +11,7 @@ import {
 
 type Props = {
   title: string;
-  iconUri: ImageSourcePropType; // Can be a local image or a remote URL
+  iconUri: ImageSourcePropType;
   onPress?: () => void;
 };
 
@@ -19,7 +19,6 @@ const CircleMenu = ({ title, iconUri, onPress }: Props) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.circle}>
-        {/* ✅ Pass iconUri directly — do not wrap it in { uri: iconUri } */}
         <Image source={iconUri} style={styles.icon} />
       </View>
       <Text style={styles.label}>{title}</Text>
@@ -39,11 +38,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1e9eaff',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden', // This clips the image to the circular boundary
+    borderWidth: 2,
+    borderColor: '#F3CF4B', // Violet color border
   },
   icon: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
+    width: 70,
+    height: 70,
+    resizeMode: 'cover', // Changed from 'contain' to 'cover' to fill the circle
   },
   label: {
     marginTop: 8,

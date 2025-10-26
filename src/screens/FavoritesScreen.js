@@ -1,51 +1,56 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, StatusBar} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const FavoritesScreen = () => {
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#0b8a0b" barStyle="light-content" />
-      
-      {/* Custom Header */}
-      <SafeAreaView style={styles.header}>
-        <Text style={styles.headerTitle}>❤️ Favorites</Text>
-      </SafeAreaView>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}> Favorites</Text>
+      </View>
+
+      {/* Content */}
       <ScrollView style={styles.content}>
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>❤️</Text>
           <Text style={styles.emptyText}>No favorites yet</Text>
-          <Text style={styles.emptySubtext}>Start adding items to your favorites!</Text>
+          <Text style={styles.emptySubtext}>
+            Start adding items to your favorites!
+          </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // ensures notch background is white
   },
   header: {
-    backgroundColor: '#0b8a0b',
+    backgroundColor: '#fff',
     paddingVertical: 16,
-    paddingHorizontal: 16,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+    color: 'black',
   },
   content: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
+    paddingVertical: 100,
   },
   emptyIcon: {
     fontSize: 64,
@@ -54,12 +59,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#999',
-    marginBottom: 8,
+    color: '#666',
+    marginBottom: 6,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#bbb',
+    color: '#aaa',
   },
 });
 

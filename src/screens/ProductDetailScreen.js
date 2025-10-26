@@ -13,13 +13,16 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
+import { useCart } from '../context/CartContext';
 
 const { width, height } = Dimensions.get('window');
 
 const ProductDetailScreen = ({ route, navigation }) => {
   const { product } = route.params;
+  const fromCart = route.params?.fromCart || false; // Check if coming from cart
   const [isFavorite, setIsFavorite] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   const handleWhatsAppShare = () => {
     const message = `Check out this product: ${product.title} - ${product.price}`;
@@ -34,7 +37,17 @@ const ProductDetailScreen = ({ route, navigation }) => {
   };
 
   const handleAddToCart = () => {
-    console.log(`Added ${quantity} x ${product.title} to cart`);
+    addToCart(product, quantity);
+  };
+
+  const increaseQuantity = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
   };
 
   return (
@@ -90,6 +103,26 @@ const ProductDetailScreen = ({ route, navigation }) => {
           {/* Product Title */}
           <Text style={styles.productTitle}>{product.title}</Text>
 
+          {/* Quantity Selector */}
+          <View style={styles.quantitySection}>
+            <Text style={styles.quantityLabel}>Quantity:</Text>
+            <View style={styles.quantityControls}>
+              <TouchableOpacity 
+                style={styles.quantityButton}
+                onPress={decreaseQuantity}
+              >
+                <Icon name="remove" size={20} color="#0b8a0b" />
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{quantity}</Text>
+              <TouchableOpacity 
+                style={styles.quantityButton}
+                onPress={increaseQuantity}
+              >
+                <Icon name="add" size={20} color="#0b8a0b" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* Product Description */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Product Details</Text>
@@ -131,33 +164,35 @@ const ProductDetailScreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Fixed Bottom Section - Price & Add to Cart */}
-      <View style={styles.bottomSection}>
-        <View style={styles.bottomContainer}>
-          {/* Left Side - Price */}
-          <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>Price</Text>
-            <Text style={styles.price}>{product.price}</Text>
-          </View>
+      {/* Fixed Bottom Section - Price & Add to Cart (Hide if from cart) */}
+      {!fromCart && (
+        <View style={styles.bottomSection}>
+          <View style={styles.bottomContainer}>
+            {/* Left Side - Price */}
+            <View style={styles.priceSection}>
+              <Text style={styles.priceLabel}>Price</Text>
+              <Text style={styles.price}>{product.price}</Text>
+            </View>
 
-          {/* Right Side - Add Button & Delivery Info */}
-          <View style={styles.addSection}>
-            <TouchableOpacity
-              style={styles.addToCartButton}
-              onPress={handleAddToCart}
-            >
-              <Icon name="shopping-cart" size={20} color="#fff" />
-              <Text style={styles.addToCartText}>Add to Cart</Text>
-            </TouchableOpacity>
+            {/* Right Side - Add Button & Delivery Info */}
+            <View style={styles.addSection}>
+              <TouchableOpacity
+                style={styles.addToCartButton}
+                onPress={handleAddToCart}
+              >
+                <Icon name="shopping-cart" size={20} color="#fff" />
+                <Text style={styles.addToCartText}>Add to Cart</Text>
+              </TouchableOpacity>
 
-            {/* Delivery Info */}
-            <View style={styles.deliveryInfo}>
-              <Icon name="local-shipping" size={14} color="#0b8a0b" />
-              <Text style={styles.deliveryText}>Delivered within 30 minutes</Text>
+              {/* Delivery Info */}
+              <View style={styles.deliveryInfo}>
+                <Icon name="local-shipping" size={14} color="#0b8a0b" />
+                <Text style={styles.deliveryText}>Delivered within 30 minutes</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -222,6 +257,44 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 16,
+  },
+  quantitySection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  quantityLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginRight: 16,
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+  },
+  quantityButton: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    margin: 4,
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginHorizontal: 16,
+    minWidth: 30,
+    textAlign: 'center',
   },
   section: {
     marginBottom: 20,

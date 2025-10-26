@@ -7,13 +7,28 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useCart } from '../context/CartContext';
 
 const ProductCard = ({ image, title, price, onAdd, product }) => {
   const navigation = useNavigation();
+  const { addToCart } = useCart();
   
   const handleCardPress = () => {
     if (product) {
       navigation.navigate('ProductDetailScreen', { product });
+    }
+  };
+
+  const handleAddPress = (e) => {
+    e.stopPropagation(); // Prevent card press when clicking Add
+    
+    if (product) {
+      addToCart(product, 1);
+    }
+    
+    // Call the original onAdd if provided
+    if (onAdd) {
+      onAdd();
     }
   };
 
@@ -30,10 +45,7 @@ const ProductCard = ({ image, title, price, onAdd, product }) => {
           <Text style={styles.price}>{price}</Text>
           <TouchableOpacity 
             style={styles.addButton} 
-            onPress={(e) => {
-              e.stopPropagation(); // Prevent card press when clicking Add
-              if (onAdd) onAdd();
-            }}
+            onPress={handleAddPress}
           >
             <Text style={styles.addText}>Add</Text>
           </TouchableOpacity>
